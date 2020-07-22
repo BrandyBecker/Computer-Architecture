@@ -1,64 +1,52 @@
-# Computer Architecture: Basics, Number Bases
+11001010 --> decimal
+2 + 8 + 64 + 128 = 198 +4 = 202
 
-At the end of this module, you should be able to:
-- describe the functional components of a CPU
-- convert between and understand decimal, binary, and hexadecimal
+0xE3 --> decimal
+(14 *16) + 3 = 227
 
------------
+0x3F
+(3*16) +15 = 48 +15 = 63
 
-# Number Bases
-- Binary 
-- Hexidecimal
+0b10101100 --> hex
+turn both halves into hex
+1010 1100
+  A   C
+0xAC
 
-Q: Why do we want different number bases as we program? Why should we have more than say, 'decimal -- why is it useful? & How many number bases do we commonly use in computer programming?
-A: To store larger numbers in less place (Hexadecima!) - most common are binary, decimal, hexadecimal, octal, base8, base64. We are used to decimal, but computers use binary deep down, and 10 is not a power of 2. Binary works great for booleans (true & false). Base2 for computers works great with binary. 
+0xAC == decimal
+(10 *16) + 12 = 172
 
-![conversion methods](https://circuitglobe.com/wp-content/uploads/2016/09/hexadecimal-to-binary-conversion-examples-3.jpg)
+easy path to follow is decimal -> hex -> binary and vice versa
 
-## Binary
-- 0s & 1s
-
-
-## Hexadecimal
-- 16, 0-9, A-F
-0x = base16 = hexadecimal
-
-```
-Ex #1) 54 --> hex
-
-54 / 16 = 3.??
-54-48 = 6
-0x36
-```
-```
-Ex #2) 0xE3 --> decimal
-E = 14
-x = 16
-(14 * 16) + 3 = 227
-```
-```
-Ex #3) 0b1101010 --> decimal
-2 + 8 + 64 + 128 = 74 + 128 = 198 + 4 = 202
-```
-```
-Ex #4) 0b10101100 ---> hex
-
-# TRICK
-[101011000] = 8 bits = 1 byte 
-1 byte = 2 nibbles
-
-0b 1010 1100 ---> hex
-0xAC = hex
-
-0xAc --> decimal
-(10 * 16) + 12 = 160 + 12 = 172
-
-decimal --> hex --> binary
-```
-```
-Ex #5) 0b11111111 ---> decimal
+0b11111111
 1111 1111
-15 + 15
-F + F
+  F   F
 0xFF
-```
+(16 * 15) + 15 = 255
+
+decimal to bianary, divide each number by 2 put down the remanider and keep going
+
+3/2 = 1 remanider 1
+ 1
+1/2 -- remanider 1
+11
+
+4/2 = 2 remanider 0
+  0
+2/2 = 1 remanider 0
+ 00
+1/2 = remanider 1
+100
+
+15/2 = 7 remanider 1 
+   1
+7/2 = 3 remanider 1
+  1
+3/2 = 1 remanider 1
+ 1
+1/2 = remanider 1
+1
+1111
+
+you can use old commands to turn them into hex, bianary, ect
+the int method will take a base as its second argument
