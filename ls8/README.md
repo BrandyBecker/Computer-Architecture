@@ -65,6 +65,27 @@ but you'll have to implement those three above instructions first!
 * Read this whole file.
 * Skim the spec.
 
+asmfolder - where programs are stored
+cpu.py
+    holds the CPU class
+    contains methods for ALU, trace
+ls8.py
+    runs the CPU code
+LS8-spec.md
+    contains info about
+        registers
+        internal registers
+        flags 
+        memory
+        stack
+        interrupts
+        power on state
+        execution sequence
+        instruction layout and set
+        ALU instructions
+        CALL register
+        lots of 2-3 letter acronyms
+
 ## Step 1: Add the constructor to `cpu.py`
 
 Add list properties to the `CPU` class to hold 256 bytes of memory and 8
