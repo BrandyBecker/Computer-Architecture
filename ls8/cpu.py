@@ -2,13 +2,21 @@
 
 import sys
 
+HLT = 1
+LDI = 10000010 
+PRN = 1000111
+PUSH = 1000101 
+POP = 1000110 
+MUL = 10100010
+ADD = 10100000
+
 class CPU:
     """Main CPU class."""
 
     def __init__(self):
         """Construct a new CPU."""
         self.ram = [0] * 256 
-        # +-----------------------+
+         # +-----------------------+
         # | FF  I7 vector         |    Interrupt vector table
         # | FE  I6 vector         |
         # | FD  I5 vector         |
@@ -28,10 +36,15 @@ class CPU:
         # | 00  Program entry     |    Program loaded upward in memory starting at 0
         # +-----------------------+
         self.reg = [0] * 8
+        
         #R5 is reserved as the interrupt mask (IM)
         #R6 is reserved as the interrupt status (IS)
         #R7 is reserved as the stack pointer (SP)
         # `PC`: Program Counter, address of the currently executing instruction
+        # `R7` is set to `0xF4`.
+        self.reg[7] = 244
+        # `PC`: Program Counter, address of the currently executing instruction
+        #  `PC` and `FL` registers are cleared to `0`.
         self.pc = 0
         #  `IR`: Instruction Register, contains a copy of the currently executing instruction
         #  `MAR`: Memory Address Register, holds the memory address we're reading or writing
@@ -86,8 +99,10 @@ class CPU:
 
         if op == "ADD":
             self.reg[reg_a] += self.reg[reg_b]
+            self.pc += 2
         elif op == "MUL":
             self.reg[reg_a] *= self.reg[reg_b]
+            self.pc += 2
         else:
             raise Exception("Unsupported ALU operation")
 
@@ -110,25 +125,48 @@ class CPU:
             print(" %02X" % self.reg[i], end='')
 
         print()
-    
-    def get_index(self, binary):
+
+    def get_index(self, binary): 
         binary_str = str(binary)
         binary_str.replace("0b", '')
         return int(binary_str, 2) 
 
     def ldi(self, reg_num, value):
         self.reg[reg_num] = value
+        self.pc += 2
 
     def prn(self, reg_num):
         print(self.reg[reg_num])
+        self.pc +=1
+
+    def push(self, reg_num):
+        # decrement the stack pointer
+        self.reg[7] -= 1
+
+        # get a value from the given register
+        value = self.reg[reg_num]
+
+        # put the value at the stack pointer address
+        sp = self.reg[7]
+        self.ram[sp] = value
+        self.pc +=1
+
+    def pop(self, operand_a):
+        # get the stack pointer (where do we look?)
+        sp = self.reg[7]
+
+        # use stack pointer to get the value
+        value = self.ram[sp]
+        # put the value into the given register
+        self.reg[operand_a] = value
+        # increment our stack pointer
+        self.reg[7] += 1
+        self.pc +=1
 
     def run(self):
         """Run the CPU."""
         # `IR`: Instruction Register, contains a copy of the currently executing instruction
         ir = self.ram_read(self.pc)
-        HLT = 1
-        LDI = 10000010 
-        PRN = 1000111
 
         while ir != HLT:
             ir = self.ram_read(self.pc)
@@ -137,19 +175,19 @@ class CPU:
             operand_a = self.get_index(self.ram_read(self.pc+1))
             operand_b = self.get_index(self.ram_read(self.pc+2))
 
-            if len(str_ir) > 6 and str_ir[-6] == "1":
-            #this is an alu operator
-                if ir == 10100010:
-                    op = "MUL"
-                elif ir == 10100000:
-                    op = "ADD"
+            if ir == MUL:
+                op = "MUL"
                 self.alu(op, operand_a, operand_b)
-                self.pc += 2
+            elif ir == ADD:
+                op = "ADD"
+                self.alu(op, operand_a, operand_b)
             elif ir == LDI:
                 self.ldi(operand_a, operand_b)
-                self.pc += 2
             elif ir == PRN:
                 self.prn(operand_a)
-                self.pc +=1
+            elif ir == PUSH:
+                self.push(operand_a)
+            elif ir == POP:
+                self.pop(operand_a)
 
             self.pc += 1 
