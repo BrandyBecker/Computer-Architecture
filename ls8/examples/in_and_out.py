@@ -4,4 +4,4 @@ with open("print8.ls8") as file:
 
 file = open("print.ls8", 'r')
 lines = file.read()
-print(line) 
+print(line)
